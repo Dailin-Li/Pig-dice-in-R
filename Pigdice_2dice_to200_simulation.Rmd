@@ -1,0 +1,58 @@
+---
+title: "Pigdice_2dice_to200_simulation"
+output: html_document
+---
+```{r format for strategy function}
+#i is the score of the 1st player, j is of the 2nd and k is the current turn total
+#when i>200 or j>200, return 1 (hold) plz
+strategy <- function(i,j,k){                     
+
+return(1 )}# return 1 (hold) or 0 (continue)     
+
+#this strategy function is just a sample for the "Try" below
+```
+
+#Simulation for 2 dice pig
+```{r}
+#output is the points got from one turn
+output<-function(i,j,strategy){k=0;initial_i<-i
+  while(i<200&&j<200){
+  store<-sample(c(1:6),size=2,replace=T)
+  if (store[1]==6&&store[2]==6){i=0;k=0 ; break}
+  else if(store[1]==6||store[2]==6) {i=initial_i;k=0; break}
+  else {k=(k+store[1]+store[2])
+        if (strategy(i,j,k)==1){i=(i+k); break}
+        }
+  }
+ return(c(i,j))   
+}  
+```
+
+```{r}
+#who would win:
+#strategy1 and ~2 are the strategy function for the 1st player and the 2nd
+win<-function(strategy1,strategy2){        
+i=0;j=0
+while(i<200&&j<200){
+i<-output(i,j,strategy1)[1]
+  if(i>=200||j>=200){break}
+j<-output(j,i,strategy2)[1]}
+
+if(i>=200){return(1)}       #1st player win
+else{return(2)}        #2nd player win
+}
+```
+
+#Example for how to use this simulation 
+```{r Try} 
+win_record<-rep(0,1000)
+for (i in 1:1000){
+win_record[i]<-win(strategy,strategy)}     #change the strategy here
+table(win_record)   #to see the behavior of the two players in 1000 games
+
+```
+
+
+
+
+```

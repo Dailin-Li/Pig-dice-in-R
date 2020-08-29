@@ -1,0 +1,67 @@
+---
+title: "Pigdice_2dice_to200_dynamicprogramming_solution"
+output: html_document
+---
+```{r}
+  probs = array(0,dim=c(210,210,210)) #setting up 3 dimensional arrays one for v(i,j,k) one for actions to take in each state
+  actions = array(0,dim=c(210,210,210)) # you can score up to 209, but can't have 0th element hence up to 210
+  for(a in 1:210){
+    for(b in 1:210){
+      for(c in 1:210){
+        if(((a+c)>=202)&(b<201)){
+          probs[a,b,c] = 1   #value of game is 200 (player won) if a+c>=201 (since all the values are shifted by 1 from absence of 0 element)
+        }
+        else{
+          probs[a,b,c] = 0 #value of game is 0 (lost) if b+c>=201
+        }
+      }
+    }
+  }
+
+repeat{probs_store<-probs
+  for(a in 210:1){
+    for(b in 210:1){
+      for(c in 210:1){if((a+c)<202&(b<201)){
+   
+          probhold = (1-probs[b,a+c-1,1]) #the expected reward from holding
+          probplay = (1/36)*probs[a,b,c+2]+(2/36)*probs[a,b,c+3]+(3/36)*probs[a,b,c+4]+(4/36)*probs[a,b,c+5]+
+            (5/36)*probs[a,b,c+6]+(4/36)*probs[a,b,c+7]+(3/36)*probs[a,b,c+8]+(2/36)*probs[a,b,c+9]+
+            (1/36)*probs[a,b,c+10]+(10/36)*(1-probs[b,a,1])+(1/36)*(1-probs[b,1,1]) #the expected reward from playing
+          probs[a,b,c] = max(probhold,probplay) 
+          }}}}
+         
+            
+   if(all(abs(probs-probs_store)<array(0.001,dim=c(210,210,210)))){break}}  
+          
+        
+      
+    
+# prb = function(i,j,k){
+#  actions[i+1,j+1,k+1] #what action should you take for this state
+#  }
+```
+
+```{r}
+actions = array(0,dim=c(210,210,210))
+ for(a in 210:1){
+    for(b in 210:1){
+      for(c in 210:1){if((a+c)<202&(b<201)){
+        probhold = (1-probs[b,a+c-1,1]) #the expected reward from holding
+          probplay = (1/36)*probs[a,b,c+2]+(2/36)*probs[a,b,c+3]+(3/36)*probs[a,b,c+4]+(4/36)*probs[a,b,c+5]+
+            (5/36)*probs[a,b,c+6]+(4/36)*probs[a,b,c+7]+(3/36)*probs[a,b,c+8]+(2/36)*probs[a,b,c+9]+
+            (1/36)*probs[a,b,c+10]+(10/36)*(1-probs[b,a,1])+(1/36)*(1-probs[b,1,1]) #the expected reward from playing
+          
+          if(probhold>probplay){
+            actions[a,b,c] = 1
+          }}
+          else{
+            actions[a,b,c] = 1}}}}#if a+c>201 should hold (have already won)
+```
+
+```{r}
+#prb is the strategy given by the dynamic programming (should be optimal)
+ prb <- function(i,j,k){
+  actions[(i+1),(j+1),(k+1)] #what action should you take for this state
+  }
+
+```

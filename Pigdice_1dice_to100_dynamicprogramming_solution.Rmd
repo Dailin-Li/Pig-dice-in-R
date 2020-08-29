@@ -1,0 +1,86 @@
+---
+title: "Pigdice_1dice_to100_dynamicprogramming_solution"
+output: html_document
+---
+
+```{r}
+  probs2 = array(0,dim=c(106,106,106)) #setting up 3 dimensional arrays one for v(i,j,k) one for actions2 to take in each state
+  actions2 = array(0,dim=c(106,106,106)) # you can score up to 105, but can't have 0th element hence up to 106
+  for(a in 1:106){
+    for(b in 1:106){
+      for(c in 1:106){
+        if(((a+c)>=102)&(b<101)){
+          probs2[a,b,c] = 1   #value of game is 100 (player won) if a+c>=101 (since all the values are shifted by 1 from absence of 0 element)
+        }
+        else{
+          probs2[a,b,c] = 0 #value of game is 0 (lost) if b+c>=101
+        }
+      }
+    }
+  }
+
+repeat{probs2_store<-probs2
+  for(a in 100:1){
+    for(b in 100:1){
+      for(c in 100:1){if((a+c)<102){
+   
+  probhold = (1-probs2[b,a+c-1,1]) #the expected reward from holding
+  probplay = (1/6)*(probs2[a,b,c+2]+probs2[a,b,c+3]+probs2[a,b,c+4]+probs2[a,b,c+5]+
+                                probs2[a,b,c+6]+1-probs2[b,a,1])#the expected reward from playing
+
+          probs2[a,b,c] = max(probhold,probplay) 
+          }}}}
+         
+            
+   if(all(abs(probs2-probs2_store)<array(0.000001,dim=c(106,106,106)))){break}}  
+          
+        
+```
+
+```{r}
+actions2 = array(0,dim=c(106,106,106))
+ for(a in 106:1){
+    for(b in 106:1){
+      for(c in 106:1){if((a+c)<102){
+        probhold = (1-probs2[b,a+c-1,1]) #the expected reward from holding
+        probplay = (1/6)*(probs2[a,b,c+2]+probs2[a,b,c+3]+probs2[a,b,c+4]+probs2[a,b,c+5]+
+                                probs2[a,b,c+6]+1-probs2[b,a,1])#the expected reward from playing
+
+          
+          if(probhold>probplay){
+            actions2[a,b,c] = 1
+          }}
+          else{
+            actions2[a,b,c] = 1}}}}#if a+c>101 should hold (may have already won)
+```
+
+```{r}
+#prb2 is the strategy given by the dynamic programming
+ prb2 <- function(i,j,k){
+  actions2[(i+1),(j+1),(k+1)] #what action should you take for this state
+  }
+
+```
+
+
+```{r}
+#Here is a comparision of the dynamic programming strategy(optimal) to a great man-made strategy
+strategy1<-function(i,j,k){    #strategy1 is a great man-made strategy suggested in the paper
+  if ((i+k)>=100){return(1)}
+  else{     if (k<19){return(0)}
+            else if ((i+k)<(j-14)){return(0)}
+            else if (i>=(100-31)||j>=(100-31)){return(0)}
+            else{ return(1)}}}
+
+
+win_record<-rep(0,100000)
+for (i in 1:100000){
+win_record[i]<-win2(prb2,strategy1)}     #two strategies are here
+table(win_record) 
+
+win_record_rev<-rep(0,100000)
+for (i in 1:100000){
+win_record_rev[i]<-win2(strategy1,prb2)}     #two strategies are here
+table(win_record_rev)   #could find the result generally follow the content in the referred paper
+```
+
